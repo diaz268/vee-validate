@@ -33,3 +33,4 @@ export { useFormErrors } from './useFormErrors';
 export { useFieldError } from './useFieldError';
 export { useSubmitForm } from './useSubmitForm';
 export { FormContextKey, FieldContextKey } from './symbols';
+export { setupDevtools } from './devtools';

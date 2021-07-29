@@ -11,6 +11,7 @@ import {
   provide,
   Ref,
   nextTick,
+  getCurrentInstance,
 } from 'vue';
 import { BaseSchema } from 'yup';
 import isEqual from 'fast-deep-equal/es6';
@@ -298,6 +299,15 @@ export function useField<TValue = unknown>(
       meta.dirty ? validateWithStateMutation() : validateValidStateOnly();
     }
   });
+
+  if (process.env.NODE_ENV === 'development') {
+    const vm = getCurrentInstance() as any;
+    if (!('_vvFields' in vm)) {
+      vm._vvFields = [];
+    }
+
+    vm._vvFields.push(field);
+  }
 
   return field;
 }
