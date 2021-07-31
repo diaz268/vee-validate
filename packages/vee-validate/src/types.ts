@@ -128,6 +128,7 @@ export type RawFormSchema<TValues> = Record<keyof TValues, string | GenericValid
 export type SchemaValidationMode = 'validated-only' | 'silent' | 'force';
 export interface PrivateFormContext<TValues extends Record<string, any> = Record<string, any>>
   extends FormActions<TValues> {
+  formId: number;
   register(field: PrivateFieldContext): void;
   unregister(field: PrivateFieldContext): void;
   values: TValues;
@@ -149,6 +150,7 @@ export interface PrivateFormContext<TValues extends Record<string, any> = Record
 export interface FormContext<TValues extends Record<string, any> = Record<string, any>>
   extends Omit<
     PrivateFormContext<TValues>,
+    | 'formId'
     | 'register'
     | 'unregister'
     | 'fieldsByPath'

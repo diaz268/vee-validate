@@ -41,6 +41,7 @@ import {
 } from './utils';
 import { isCallable } from '../../shared';
 import { FieldContextKey, FormInitialValuesKey, FormContextKey } from './symbols';
+import { refreshInspector } from './devtools';
 
 interface FieldOptions<TValue = unknown> {
   initialValue?: MaybeRef<TValue>;
@@ -301,12 +302,9 @@ export function useField<TValue = unknown>(
   });
 
   if (process.env.NODE_ENV === 'development') {
-    const vm = getCurrentInstance() as any;
-    if (!('_vvFields' in vm)) {
-      vm._vvFields = [];
-    }
-
-    vm._vvFields.push(field);
+    watch(() => ({ errors: errors.value, ...meta, value: value.value }), refreshInspector, {
+      deep: true,
+    });
   }
 
   return field;
