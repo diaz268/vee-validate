@@ -11,7 +11,6 @@ import {
   provide,
   Ref,
   nextTick,
-  getCurrentInstance,
 } from 'vue';
 import { BaseSchema } from 'yup';
 import isEqual from 'fast-deep-equal/es6';
@@ -41,7 +40,7 @@ import {
 } from './utils';
 import { isCallable } from '../../shared';
 import { FieldContextKey, FormInitialValuesKey, FormContextKey } from './symbols';
-import { refreshInspector } from './devtools';
+import { refreshInspector, registerSingleFieldWithDevtools } from './devtools';
 
 interface FieldOptions<TValue = unknown> {
   initialValue?: MaybeRef<TValue>;
@@ -249,6 +248,16 @@ export function useField<TValue = unknown>(
     );
   }
 
+  if (process.env.NODE_ENV === 'development') {
+    watch(() => ({ errors: errors.value, ...meta, value: value.value }), refreshInspector, {
+      deep: true,
+    });
+
+    if (!form) {
+      registerSingleFieldWithDevtools(field);
+    }
+  }
+
   // if no associated form return the field API immediately
   if (!form) {
     return field;
@@ -300,12 +309,6 @@ export function useField<TValue = unknown>(
       meta.dirty ? validateWithStateMutation() : validateValidStateOnly();
     }
   });
-
-  if (process.env.NODE_ENV === 'development') {
-    watch(() => ({ errors: errors.value, ...meta, value: value.value }), refreshInspector, {
-      deep: true,
-    });
-  }
 
   return field;
 }
