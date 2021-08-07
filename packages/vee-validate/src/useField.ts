@@ -11,6 +11,7 @@ import {
   provide,
   Ref,
   nextTick,
+  getCurrentInstance,
 } from 'vue';
 import { BaseSchema } from 'yup';
 import isEqual from 'fast-deep-equal/es6';
@@ -249,6 +250,7 @@ export function useField<TValue = unknown>(
   }
 
   if (process.env.NODE_ENV === 'development') {
+    (field as any)._vm = getCurrentInstance();
     watch(() => ({ errors: errors.value, ...meta, value: value.value }), refreshInspector, {
       deep: true,
     });
